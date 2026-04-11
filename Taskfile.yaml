@@ -4,6 +4,9 @@ vars:
   BINARY: mgit
   CMD: ./cmd/mgit
   DIST: dist
+  VERSION: 1.0.0
+  BUILD_DATE:
+    sh: date +%Y-%m-%d
   INSTALL_DIR:
     sh: go env GOPATH
 
@@ -17,7 +20,7 @@ tasks:
     desc: Build the mgit binary into dist/
     cmds:
       - mkdir -p {{.DIST}}
-      - go build -o {{.DIST}}/{{.BINARY}} {{.CMD}}
+      - go build -ldflags "-X main.version={{.VERSION}} -X main.buildDate={{.BUILD_DATE}}" -o {{.DIST}}/{{.BINARY}} {{.CMD}}
     sources:
       - "**/*.go"
       - go.mod
@@ -33,5 +36,5 @@ tasks:
   install:
     desc: Install mgit to $GOPATH/bin (add $GOPATH/bin to PATH if not already there)
     cmds:
-      - go install {{.CMD}}
+      - go install -ldflags "-X main.version={{.VERSION}} -X main.buildDate={{.BUILD_DATE}}" {{.CMD}}
       - echo "Installed to {{.INSTALL_DIR}}/bin/{{.BINARY}}"

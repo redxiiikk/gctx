@@ -16,9 +16,9 @@ var ErrConfigNotFound = errors.New("mgit.yaml not found")
 
 // Config mirrors the fields in mgit.yaml.
 type Config struct {
-	SSHPrivateKey string `yaml:"ssh_private_key"`
-	GitUsername   string `yaml:"git_username"`
-	GitEmail      string `yaml:"git_email"`
+	SSHPrivateKey string `yaml:"ssh_private_key,omitempty"`
+	GitUsername   string `yaml:"git_username,omitempty"`
+	GitEmail      string `yaml:"git_email,omitempty"`
 }
 
 // Load searches for mgit.yaml starting from the current working directory and
@@ -63,6 +63,25 @@ func Load() (*Config, error) {
 		dir = parent
 	}
 	return nil, ErrConfigNotFound
+}
+
+// Write serializes cfg to mgit.yaml in dir, omitting fields that are empty.
+// It creates the file (or truncates an existing one).
+func Write(cfg *Config, dir string) error {
+	if cfg == nil {
+		cfg = &Config{}
+	}
+
+	data, err := yaml.Marshal(cfg)
+	if err != nil {
+		return fmt.Errorf("marshalling config: %w", err)
+	}
+
+	cfgPath := filepath.Join(dir, "mgit.yaml")
+	if err := os.WriteFile(cfgPath, data, 0o644); err != nil {
+		return fmt.Errorf("writing %s: %w", cfgPath, err)
+	}
+	return nil
 }
 
 // ExpandPath expands a leading ~ or ~/ in p to the user's home directory.
