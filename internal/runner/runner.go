@@ -42,8 +42,7 @@ func Run(cfg *config.Config, gitArgs []string) (int, error) {
 	if err := cmd.Run(); err == nil {
 		return 0, nil
 	} else {
-		var ee *exec.ExitError
-		if errors.As(err, &ee) {
+		if ee, ok := errors.AsType[*exec.ExitError](err); ok {
 			return ee.ExitCode(), nil
 		}
 		return 1, fmt.Errorf("running git: %w", err)
