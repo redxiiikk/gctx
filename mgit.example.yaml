@@ -1,0 +1,14 @@
+# mgit configuration file
+#
+# Rename this file to mgit.yaml and place it in your project directory (or any
+# parent directory up to your home directory). mgit searches upward from the
+# current working directory and uses the first file it finds.
+
+# Path to the SSH private key to use for remote operations (clone, fetch,
+# push, pull, etc.). Supports ~ expansion.
+ssh_private_key: ~/.ssh/id_ed25519_work
+
+# Git author and committer identity injected for commands that create objects
+# (commit, merge, tag, rebase, cherry-pick, etc.).
+git_username: Your Name
+git_email: you@example.com

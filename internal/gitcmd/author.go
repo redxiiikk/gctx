@@ -1,10 +1,15 @@
-package main
+package gitcmd
 
-import "strings"
+import (
+	"strings"
 
-// needsAuthorIdentity reports whether git may use user.name / user.email for new objects.
-func needsAuthorIdentity(args []string) bool {
-	sub, rest := firstGitSubcommand(args)
+	"github.com/redxiiikk/mgit/internal/config"
+)
+
+// NeedsAuthorIdentity reports whether the git invocation may create new objects
+// that reference user.name / user.email.
+func NeedsAuthorIdentity(args []string) bool {
+	sub, rest := FirstGitSubcommand(args)
 	switch sub {
 	case "commit", "merge", "rebase", "cherry-pick", "revert", "pull", "am":
 		return true
@@ -43,8 +48,8 @@ func notesNeedsAuthor(rest []string) bool {
 	}
 }
 
-// authorEnvPairs returns GIT_AUTHOR_* / GIT_COMMITTER_* entries for exec.Command.Env.
-func authorEnvPairs(cfg *Config) []string {
+// AuthorEnvPairs returns GIT_AUTHOR_* / GIT_COMMITTER_* env entries from cfg.
+func AuthorEnvPairs(cfg *config.Config) []string {
 	if cfg == nil {
 		return nil
 	}
