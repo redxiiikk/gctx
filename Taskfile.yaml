@@ -4,9 +4,19 @@ vars:
   BINARY: mgit
   CMD: ./cmd/mgit
   DIST: dist
-  VERSION: 1.0.0
+  # Leave VERSION empty for local builds — the default in main.go is used.
+  # CI should pass the git tag: task build VERSION=v1.2.3
+  VERSION: ""
   BUILD_DATE:
     sh: date +%Y-%m-%d
+  # Inject buildDate always; inject version only when VERSION is non-empty.
+  LDFLAGS:
+    sh: |
+      flags="-X main.buildDate={{.BUILD_DATE}}"
+      if [ -n "{{.VERSION}}" ]; then
+        flags="$flags -X main.version={{.VERSION}}"
+      fi
+      echo "$flags"
   INSTALL_DIR:
     sh: go env GOPATH
 
@@ -20,7 +30,7 @@ tasks:
     desc: Build the mgit binary into dist/
     cmds:
       - mkdir -p {{.DIST}}
-      - go build -ldflags "-X main.version={{.VERSION}} -X main.buildDate={{.BUILD_DATE}}" -o {{.DIST}}/{{.BINARY}} {{.CMD}}
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.DIST}}/{{.BINARY}} {{.CMD}}
     sources:
       - "**/*.go"
       - go.mod
@@ -36,5 +46,5 @@ tasks:
   install:
     desc: Install mgit to $GOPATH/bin (add $GOPATH/bin to PATH if not already there)
     cmds:
-      - go install -ldflags "-X main.version={{.VERSION}} -X main.buildDate={{.BUILD_DATE}}" {{.CMD}}
+      - go install -ldflags "{{.LDFLAGS}}" {{.CMD}}
       - echo "Installed to {{.INSTALL_DIR}}/bin/{{.BINARY}}"

@@ -11,8 +11,8 @@ import (
 
 // Set via -ldflags at build time.
 var (
-	version   = "1.0.0"
-	buildDate = "dev"
+	version   = "dev-build-version"
+	buildDate = "N/A"
 )
 
 func main() {
