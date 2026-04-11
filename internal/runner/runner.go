@@ -58,13 +58,13 @@ func printInjection(cfg *config.Config, inject []gitcmd.EnvVar) {
 		return
 	}
 	if findEnvVar(inject, "GIT_SSH_COMMAND") != "" {
-		fmt.Fprintf(os.Stderr, "[mgit] using SSH key: %s\n", config.ExpandPath(cfg.SSHPrivateKey))
+		fmt.Fprintf(os.Stdout, "[mgit] using SSH key: %s\n", config.ExpandPath(cfg.SSHPrivateKey))
 	}
 	if name := findEnvVar(inject, "GIT_AUTHOR_NAME"); name != "" {
-		fmt.Fprintf(os.Stderr, "[mgit] using author name: %s\n", name)
+		fmt.Fprintf(os.Stdout, "[mgit] using author name: %s\n", name)
 	}
 	if email := findEnvVar(inject, "GIT_AUTHOR_EMAIL"); email != "" {
-		fmt.Fprintf(os.Stderr, "[mgit] using author email: %s\n", email)
+		fmt.Fprintf(os.Stdout, "[mgit] using author email: %s\n", email)
 	}
 }
 
