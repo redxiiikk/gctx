@@ -64,28 +64,28 @@ func TestNeedsSSHAuth(t *testing.T) {
 	}
 }
 
-func TestSSHCommand_NoConfig(t *testing.T) {
-	cmd, err := SSHCommand(nil)
+func TestSSHEnvVars_NoConfig(t *testing.T) {
+	vars, err := SSHEnvVars(nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cmd != "" {
-		t.Errorf("expected empty command, got %q", cmd)
+	if vars != nil {
+		t.Errorf("expected nil, got %v", vars)
 	}
 }
 
-func TestSSHCommand_NoKey(t *testing.T) {
+func TestSSHEnvVars_NoKey(t *testing.T) {
 	cfg := &config.Config{}
-	cmd, err := SSHCommand(cfg)
+	vars, err := SSHEnvVars(cfg)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cmd != "" {
-		t.Errorf("expected empty command, got %q", cmd)
+	if vars != nil {
+		t.Errorf("expected nil, got %v", vars)
 	}
 }
 
-func TestSSHCommand_KeyExists(t *testing.T) {
+func TestSSHEnvVars_KeyExists(t *testing.T) {
 	f, err := os.CreateTemp(t.TempDir(), "id_rsa")
 	if err != nil {
 		t.Fatal(err)
@@ -93,27 +93,30 @@ func TestSSHCommand_KeyExists(t *testing.T) {
 	f.Close()
 
 	cfg := &config.Config{SSHPrivateKey: f.Name()}
-	cmd, err := SSHCommand(cfg)
+	vars, err := SSHEnvVars(cfg)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if !strings.Contains(cmd, "ssh -i") {
-		t.Errorf("expected 'ssh -i ...' in command, got %q", cmd)
+	if len(vars) != 1 || vars[0].Key != "GIT_SSH_COMMAND" {
+		t.Fatalf("expected one GIT_SSH_COMMAND var, got %v", vars)
 	}
-	if !strings.Contains(cmd, "IdentitiesOnly=yes") {
-		t.Errorf("expected 'IdentitiesOnly=yes' in command, got %q", cmd)
+	if !strings.Contains(vars[0].Value, "ssh -i") {
+		t.Errorf("expected 'ssh -i ...' in value, got %q", vars[0].Value)
+	}
+	if !strings.Contains(vars[0].Value, "IdentitiesOnly=yes") {
+		t.Errorf("expected 'IdentitiesOnly=yes' in value, got %q", vars[0].Value)
 	}
 }
 
-func TestSSHCommand_KeyMissing(t *testing.T) {
+func TestSSHEnvVars_KeyMissing(t *testing.T) {
 	cfg := &config.Config{SSHPrivateKey: "/nonexistent/path/id_rsa"}
-	_, err := SSHCommand(cfg)
+	_, err := SSHEnvVars(cfg)
 	if err == nil {
 		t.Error("expected error for missing key file, got nil")
 	}
 }
 
-func TestSSHCommand_TildeExpansion(t *testing.T) {
+func TestSSHEnvVars_TildeExpansion(t *testing.T) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		t.Skip("cannot determine home dir")
@@ -128,12 +131,15 @@ func TestSSHCommand_TildeExpansion(t *testing.T) {
 
 	rel := "~/" + filepath.Base(f.Name())
 	cfg := &config.Config{SSHPrivateKey: rel}
-	cmd, err := SSHCommand(cfg)
+	vars, err := SSHEnvVars(cfg)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if !strings.Contains(cmd, "ssh -i") {
-		t.Errorf("expected 'ssh -i ...' in command, got %q", cmd)
+	if len(vars) != 1 || vars[0].Key != "GIT_SSH_COMMAND" {
+		t.Fatalf("expected one GIT_SSH_COMMAND var, got %v", vars)
+	}
+	if !strings.Contains(vars[0].Value, "ssh -i") {
+		t.Errorf("expected 'ssh -i ...' in value, got %q", vars[0].Value)
 	}
 }
 

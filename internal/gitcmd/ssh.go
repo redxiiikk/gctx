@@ -63,34 +63,22 @@ func submoduleNeedsSSH(rest []string) bool {
 	}
 }
 
-// SSHCommand returns the value for GIT_SSH_COMMAND built from cfg, or an empty
-// string if no SSH key is configured. It returns an error if the configured
-// key file does not exist on disk.
-func SSHCommand(cfg *config.Config) (string, error) {
+// SSHEnvVars returns the GIT_SSH_COMMAND env var built from cfg, or nil if no
+// SSH key is configured. It returns an error if the configured key file does
+// not exist on disk.
+func SSHEnvVars(cfg *config.Config) ([]EnvVar, error) {
 	if cfg == nil {
-		return "", nil
+		return nil, nil
 	}
 	key := config.ExpandPath(cfg.SSHPrivateKey)
 	if key == "" {
-		return "", nil
+		return nil, nil
 	}
 	if _, err := os.Stat(key); err != nil {
-		return "", fmt.Errorf("SSH private key not found: %s", key)
+		return nil, fmt.Errorf("SSH private key not found: %s", key)
 	}
-	return "ssh -i " + shellQuoteSingle(key) + " -o IdentitiesOnly=yes", nil
-}
-
-// EnvironWithout returns os.Environ() with the named keys removed.
-func EnvironWithout(keys map[string]struct{}) []string {
-	var out []string
-	for _, e := range os.Environ() {
-		name := strings.SplitN(e, "=", 2)[0]
-		if _, drop := keys[name]; drop {
-			continue
-		}
-		out = append(out, e)
-	}
-	return out
+	cmd := "ssh -i " + shellQuoteSingle(key) + " -o IdentitiesOnly=yes"
+	return []EnvVar{{Key: "GIT_SSH_COMMAND", Value: cmd}}, nil
 }
 
 func shellQuoteSingle(s string) string {

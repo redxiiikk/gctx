@@ -48,8 +48,9 @@ func notesNeedsAuthor(rest []string) bool {
 	}
 }
 
-// AuthorEnvPairs returns GIT_AUTHOR_* / GIT_COMMITTER_* env entries from cfg.
-func AuthorEnvPairs(cfg *config.Config) []string {
+// AuthorEnvVars returns the GIT_AUTHOR_* / GIT_COMMITTER_* env vars derived
+// from cfg. Only fields that are non-empty in the config produce entries.
+func AuthorEnvVars(cfg *config.Config) []EnvVar {
 	if cfg == nil {
 		return nil
 	}
@@ -58,12 +59,18 @@ func AuthorEnvPairs(cfg *config.Config) []string {
 	if name == "" && email == "" {
 		return nil
 	}
-	var p []string
+	var vars []EnvVar
 	if name != "" {
-		p = append(p, "GIT_AUTHOR_NAME="+name, "GIT_COMMITTER_NAME="+name)
+		vars = append(vars,
+			EnvVar{"GIT_AUTHOR_NAME", name},
+			EnvVar{"GIT_COMMITTER_NAME", name},
+		)
 	}
 	if email != "" {
-		p = append(p, "GIT_AUTHOR_EMAIL="+email, "GIT_COMMITTER_EMAIL="+email)
+		vars = append(vars,
+			EnvVar{"GIT_AUTHOR_EMAIL", email},
+			EnvVar{"GIT_COMMITTER_EMAIL", email},
+		)
 	}
-	return p
+	return vars
 }
