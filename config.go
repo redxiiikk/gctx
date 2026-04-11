@@ -20,19 +20,40 @@ func loadConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	path := filepath.Join(wd, "mgit.yaml")
-	data, err := os.ReadFile(path)
+	dir, err := filepath.Abs(filepath.Clean(wd))
 	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
+		return nil, err
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	home = filepath.Clean(home)
+
+	for {
+		cfgPath := filepath.Join(dir, "mgit.yaml")
+		data, err := os.ReadFile(cfgPath)
+		if err == nil {
+			var c Config
+			if err := yaml.Unmarshal(data, &c); err != nil {
+				return nil, err
+			}
+			return &c, nil
 		}
-		return nil, err
+		if !os.IsNotExist(err) {
+			return nil, err
+		}
+
+		if dir == home {
+			break
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
 	}
-	var c Config
-	if err := yaml.Unmarshal(data, &c); err != nil {
-		return nil, err
-	}
-	return &c, nil
+	return nil, nil
 }
 
 func expandPath(p string) string {
