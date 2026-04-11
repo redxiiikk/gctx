@@ -7,10 +7,10 @@ import (
 
 func TestFirstGitSubcommand(t *testing.T) {
 	tests := []struct {
-		name        string
-		args        []string
-		wantSub     string
-		wantRest    []string
+		name     string
+		args     []string
+		wantSub  string
+		wantRest []string
 	}{
 		{
 			name:     "empty args",
