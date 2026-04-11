@@ -170,6 +170,28 @@ etc.), the following variables are set:
 
 Any pre-existing values for these variables in the environment are replaced.
 
+## IDE Integration
+
+> **Note:** `mgit` works as a drop-in Git replacement for IDE operations that
+> invoke an external `git` process. IDEs that use embedded Git libraries
+> (e.g. JGit, libgit2) internally may bypass the configured executable, so
+> full compatibility cannot be guaranteed.
+
+### VSCode
+
+Add to `.vscode/settings.json`:
+
+```json
+{
+  "git.path": "/usr/local/bin/mgit"
+}
+```
+
+### JetBrains IDEs
+
+Open **Settings / Preferences** → **Version Control** → **Git**, set
+**Path to Git executable** to the absolute path of `mgit`, then click **Test**.
+
 ## Project structure
 
 ```
