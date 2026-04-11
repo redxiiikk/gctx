@@ -1,6 +1,8 @@
 # Project-specific ignores
-dist/          # go task build output
-.task/         # go-task checksum cache
+# go task build output
+dist/
+# go-task checksum cache
+.task/
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,jetbrains+all,visualstudiocode,go
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,jetbrains+all,visualstudiocode,go
