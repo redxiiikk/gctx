@@ -18,12 +18,20 @@ author identity), `mgit` removes the need to juggle `GIT_SSH_COMMAND`,
 go install github.com/redxiiikk/mgit/cmd/mgit@latest
 ```
 
-Or build from source:
+Or build from source using [Task](https://taskfile.dev):
 
 ```bash
 git clone https://github.com/redxiiikk/mgit.git
 cd mgit
-go build -o mgit ./cmd/mgit
+task build    # builds to dist/mgit
+task install  # installs to $GOPATH/bin and sets up shell completion
+```
+
+`task install` auto-detects your current shell from `$SHELL` and installs the
+appropriate completion script. You can also run it standalone at any time:
+
+```bash
+task completion
 ```
 
 ## Usage
@@ -35,6 +43,77 @@ mgit clone git@github.com:org/repo.git
 mgit commit -m "fix: something"
 mgit push origin main
 ```
+
+### Built-in commands
+
+`mgit` also exposes its own subcommands under the `mgit mgit` namespace:
+
+| Command | Description |
+|---------|-------------|
+| `mgit mgit version` | Show version and build date |
+| `mgit mgit init` | Interactively create a `mgit.yaml` in the current directory |
+| `mgit mgit completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`) |
+
+### Shell tab completion
+
+#### Option 1 — eval (recommended)
+
+Add a single line to your shell's startup file. The completion script is
+generated fresh on every shell start, so it stays in sync automatically
+whenever `mgit` is updated.
+
+**Zsh** — add to `~/.zshrc`:
+
+```zsh
+eval "$(mgit mgit completion zsh)"
+```
+
+**Bash** — add to `~/.bashrc`:
+
+```bash
+eval "$(mgit mgit completion bash)"
+```
+
+**Fish** — add to `~/.config/fish/config.fish`:
+
+```fish
+mgit mgit completion fish | source
+```
+
+#### Option 2 — static file
+
+Write the script to disk once and source it from your shell config.
+You will need to re-run the command after updating `mgit`.
+
+**Zsh**
+
+```zsh
+mkdir -p ~/.zfunc
+mgit mgit completion zsh > ~/.zfunc/_mgit
+# Ensure ~/.zshrc contains (before compinit):
+#   fpath=(~/.zfunc $fpath)
+#   autoload -Uz compinit && compinit
+```
+
+**Bash**
+
+```bash
+mkdir -p ~/.bash_completion.d
+mgit mgit completion bash > ~/.bash_completion.d/mgit
+# Ensure ~/.bashrc contains:
+#   source ~/.bash_completion.d/mgit
+```
+
+**Fish**
+
+```fish
+mgit mgit completion fish > ~/.config/fish/completions/mgit.fish
+```
+
+---
+
+Once active, `mgit mgit <tab>` completes built-in subcommands, and all other
+`mgit <tab>` invocations delegate to `git`'s native completion.
 
 ## Configuration
 
@@ -95,7 +174,11 @@ Any pre-existing values for these variables in the environment are replaced.
 
 ```
 mgit/
-├── cmd/mgit/main.go          — entry point
+├── cmd/mgit/
+│   ├── main.go               — entry point and mgit subcommand dispatcher
+│   ├── cmd_version.go        — `mgit mgit version`
+│   ├── cmd_init.go           — `mgit mgit init`
+│   └── cmd_completion.go     — `mgit mgit completion`
 ├── internal/
 │   ├── config/               — config loading and path expansion
 │   ├── gitcmd/               — subcommand detection, SSH and author helpers

@@ -37,7 +37,7 @@ func main() {
 func runMgitCmd(args []string) int {
 	if len(args) == 0 {
 		fmt.Fprintln(os.Stderr, "usage: mgit mgit <command>")
-		fmt.Fprintln(os.Stderr, "commands: version, init")
+		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
 		return 1
 	}
 	switch args[0] {
@@ -45,9 +45,11 @@ func runMgitCmd(args []string) int {
 		return cmdVersion()
 	case "init":
 		return cmdInit()
+	case "completion":
+		return cmdCompletion(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown mgit command: %s\n", args[0])
-		fmt.Fprintln(os.Stderr, "commands: version, init")
+		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
 		return 1
 	}
 }

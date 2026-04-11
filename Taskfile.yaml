@@ -44,7 +44,43 @@ tasks:
       - go test ./...
 
   install:
-    desc: Install mgit to $GOPATH/bin (add $GOPATH/bin to PATH if not already there)
+    desc: Install mgit to $GOPATH/bin and set up shell completion
     cmds:
       - go install -ldflags "{{.LDFLAGS}}" {{.CMD}}
       - echo "Installed to {{.INSTALL_DIR}}/bin/{{.BINARY}}"
+      - task: completion
+
+  completion:
+    desc: Add mgit completion eval line to your shell's startup config (auto-detected from $SHELL)
+    vars:
+      SHELL_NAME:
+        sh: basename "$SHELL"
+    cmds:
+      - cmd: |
+          case "{{.SHELL_NAME}}" in
+            zsh)
+              RC=~/.zshrc
+              LINE='eval "$(mgit mgit completion zsh)"'
+              ;;
+            bash)
+              RC=~/.bashrc
+              LINE='eval "$(mgit mgit completion bash)"'
+              ;;
+            fish)
+              RC=~/.config/fish/config.fish
+              LINE='mgit mgit completion fish | source'
+              mkdir -p ~/.config/fish
+              ;;
+            *)
+              echo "Unsupported shell: {{.SHELL_NAME}} — add the eval line manually:"
+              echo "  eval \"\$(mgit mgit completion <bash|zsh|fish>)\""
+              exit 1
+              ;;
+          esac
+          if grep -qF "$LINE" "$RC" 2>/dev/null; then
+            echo "mgit completion already configured in $RC"
+          else
+            printf '\n# mgit shell completion\n%s\n' "$LINE" >> "$RC"
+            echo "Added mgit completion to $RC"
+            echo "Restart your shell or run: source $RC"
+          fi
