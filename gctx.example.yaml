@@ -1,7 +1,7 @@
-# mgit configuration file
+# gctx configuration file
 #
-# Rename this file to mgit.yaml and place it in your project directory (or any
-# parent directory up to your home directory). mgit searches upward from the
+# Rename this file to gctx.yaml and place it in your project directory (or any
+# parent directory up to your home directory). gctx searches upward from the
 # current working directory and uses the first file it finds.
 
 # Path to the SSH private key to use for remote operations (clone, fetch,

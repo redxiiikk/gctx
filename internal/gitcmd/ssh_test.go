@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/redxiiikk/mgit/internal/config"
+	"github.com/redxiiikk/gctx/internal/config"
 )
 
 func TestNeedsSSHAuth(t *testing.T) {
@@ -122,7 +122,7 @@ func TestSSHEnvVars_TildeExpansion(t *testing.T) {
 		t.Skip("cannot determine home dir")
 	}
 	// Create a temp key file inside home so tilde expansion can be verified.
-	f, err := os.CreateTemp(home, "mgit_test_key_*")
+	f, err := os.CreateTemp(home, "gctx_test_key_*")
 	if err != nil {
 		t.Skip("cannot create temp file in home dir")
 	}

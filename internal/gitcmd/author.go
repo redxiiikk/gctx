@@ -3,7 +3,7 @@ package gitcmd
 import (
 	"strings"
 
-	"github.com/redxiiikk/mgit/internal/config"
+	"github.com/redxiiikk/gctx/internal/config"
 )
 
 // NeedsAuthorIdentity reports whether the git invocation may create new objects

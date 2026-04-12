@@ -1,8 +1,8 @@
 version: "3"
 
 vars:
-  BINARY: mgit
-  CMD: ./cmd/mgit
+  BINARY: gctx
+  CMD: ./cmd/gctx
   DIST: dist
   # Leave VERSION empty for local builds — the default in main.go is used.
   # CI should pass the git tag: task build VERSION=v1.2.3
@@ -27,7 +27,7 @@ tasks:
       - gofmt -w -s .
 
   build:
-    desc: Build the mgit binary into dist/
+    desc: Build the gctx binary into dist/
     cmds:
       - mkdir -p {{.DIST}}
       - go build -ldflags "{{.LDFLAGS}}" -o {{.DIST}}/{{.BINARY}} {{.CMD}}
@@ -44,14 +44,14 @@ tasks:
       - go test ./...
 
   install:
-    desc: Install mgit to $GOPATH/bin and set up shell completion
+    desc: Install gctx to $GOPATH/bin and set up shell completion
     cmds:
       - go install -ldflags "{{.LDFLAGS}}" {{.CMD}}
       - echo "Installed to {{.INSTALL_DIR}}/bin/{{.BINARY}}"
       - task: completion
 
   completion:
-    desc: Add mgit completion eval line to your shell's startup config (auto-detected from $SHELL)
+    desc: Add gctx completion eval line to your shell's startup config (auto-detected from $SHELL)
     vars:
       SHELL_NAME:
         sh: basename "$SHELL"
@@ -60,27 +60,27 @@ tasks:
           case "{{.SHELL_NAME}}" in
             zsh)
               RC=~/.zshrc
-              LINE='eval "$(mgit mgit completion zsh)"'
+              LINE='eval "$(gctx gctx completion zsh)"'
               ;;
             bash)
               RC=~/.bashrc
-              LINE='eval "$(mgit mgit completion bash)"'
+              LINE='eval "$(gctx gctx completion bash)"'
               ;;
             fish)
               RC=~/.config/fish/config.fish
-              LINE='mgit mgit completion fish | source'
+              LINE='gctx gctx completion fish | source'
               mkdir -p ~/.config/fish
               ;;
             *)
               echo "Unsupported shell: {{.SHELL_NAME}} — add the eval line manually:"
-              echo "  eval \"\$(mgit mgit completion <bash|zsh|fish>)\""
+              echo "  eval \"\$(gctx gctx completion <bash|zsh|fish>)\""
               exit 1
               ;;
           esac
           if grep -qF "$LINE" "$RC" 2>/dev/null; then
-            echo "mgit completion already configured in $RC"
+            echo "gctx completion already configured in $RC"
           else
-            printf '\n# mgit shell completion\n%s\n' "$LINE" >> "$RC"
-            echo "Added mgit completion to $RC"
+            printf '\n# gctx shell completion\n%s\n' "$LINE" >> "$RC"
+            echo "Added gctx completion to $RC"
             echo "Restart your shell or run: source $RC"
           fi

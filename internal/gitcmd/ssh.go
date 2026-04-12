@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/redxiiikk/mgit/internal/config"
+	"github.com/redxiiikk/gctx/internal/config"
 )
 
 // NeedsSSHAuth reports whether this git invocation may spawn ssh to a remote.

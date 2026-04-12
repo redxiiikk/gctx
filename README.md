@@ -1,29 +1,29 @@
-# mgit
+# gctx
 
-`mgit` is a thin Git wrapper that automatically injects per-project SSH keys
+`gctx` is a thin Git wrapper that automatically injects per-project SSH keys
 and author identity from a local configuration file. It is a transparent
-pass-through: every argument you pass to `mgit` is forwarded to `git` unchanged.
+pass-through: every argument you pass to `gctx` is forwarded to `git` unchanged.
 
 ## Why
 
 When you work across multiple organisations (each with its own SSH key and
-author identity), `mgit` removes the need to juggle `GIT_SSH_COMMAND`,
+author identity), `gctx` removes the need to juggle `GIT_SSH_COMMAND`,
 `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, or `includeIf` stanzas in
-`~/.gitconfig`. Drop a `mgit.yaml` in a project (or workspace root) and every
-`mgit` invocation in that tree picks it up automatically.
+`~/.gitconfig`. Drop a `gctx.yaml` in a project (or workspace root) and every
+`gctx` invocation in that tree picks it up automatically.
 
 ## Installation
 
 ```bash
-go install github.com/redxiiikk/mgit/cmd/mgit@latest
+go install github.com/redxiiikk/gctx/cmd/gctx@latest
 ```
 
 Or build from source using [Task](https://taskfile.dev):
 
 ```bash
-git clone https://github.com/redxiiikk/mgit.git
-cd mgit
-task build    # builds to dist/mgit
+git clone https://github.com/redxiiikk/gctx.git
+cd gctx
+task build    # builds to dist/gctx
 task install  # installs to $GOPATH/bin and sets up shell completion
 ```
 
@@ -36,23 +36,23 @@ task completion
 
 ## Usage
 
-Use `mgit` everywhere you would use `git`:
+Use `gctx` everywhere you would use `git`:
 
 ```bash
-mgit clone git@github.com:org/repo.git
-mgit commit -m "fix: something"
-mgit push origin main
+gctx clone git@github.com:org/repo.git
+gctx commit -m "fix: something"
+gctx push origin main
 ```
 
 ### Built-in commands
 
-`mgit` also exposes its own subcommands under the `mgit mgit` namespace:
+`gctx` also exposes its own subcommands under the `gctx gctx` namespace:
 
-| Command | Description |
-|---------|-------------|
-| `mgit mgit version` | Show version and build date |
-| `mgit mgit init` | Interactively create a `mgit.yaml` in the current directory |
-| `mgit mgit completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`) |
+| Command                        | Description                                                 |
+|--------------------------------|-------------------------------------------------------------|
+| `gctx gctx version`            | Show version and build date                                 |
+| `gctx gctx init`               | Interactively create a `gctx.yaml` in the current directory |
+| `gctx gctx completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`)  |
 
 ### Shell tab completion
 
@@ -60,36 +60,36 @@ mgit push origin main
 
 Add a single line to your shell's startup file. The completion script is
 generated fresh on every shell start, so it stays in sync automatically
-whenever `mgit` is updated.
+whenever `gctx` is updated.
 
 **Zsh** — add to `~/.zshrc`:
 
 ```zsh
-eval "$(mgit mgit completion zsh)"
+eval "$(gctx gctx completion zsh)"
 ```
 
 **Bash** — add to `~/.bashrc`:
 
 ```bash
-eval "$(mgit mgit completion bash)"
+eval "$(gctx gctx completion bash)"
 ```
 
 **Fish** — add to `~/.config/fish/config.fish`:
 
 ```fish
-mgit mgit completion fish | source
+gctx gctx completion fish | source
 ```
 
 #### Option 2 — static file
 
 Write the script to disk once and source it from your shell config.
-You will need to re-run the command after updating `mgit`.
+You will need to re-run the command after updating `gctx`.
 
 **Zsh**
 
 ```zsh
 mkdir -p ~/.zfunc
-mgit mgit completion zsh > ~/.zfunc/_mgit
+gctx gctx completion zsh > ~/.zfunc/_gctx
 # Ensure ~/.zshrc contains (before compinit):
 #   fpath=(~/.zfunc $fpath)
 #   autoload -Uz compinit && compinit
@@ -99,26 +99,26 @@ mgit mgit completion zsh > ~/.zfunc/_mgit
 
 ```bash
 mkdir -p ~/.bash_completion.d
-mgit mgit completion bash > ~/.bash_completion.d/mgit
+gctx gctx completion bash > ~/.bash_completion.d/gctx
 # Ensure ~/.bashrc contains:
-#   source ~/.bash_completion.d/mgit
+#   source ~/.bash_completion.d/gctx
 ```
 
 **Fish**
 
 ```fish
-mgit mgit completion fish > ~/.config/fish/completions/mgit.fish
+gctx gctx completion fish > ~/.config/fish/completions/gctx.fish
 ```
 
 ---
 
-Once active, `mgit mgit <tab>` completes built-in subcommands, and all other
-`mgit <tab>` invocations delegate to `git`'s native completion.
+Once active, `gctx gctx <tab>` completes built-in subcommands, and all other
+`gctx <tab>` invocations delegate to `git`'s native completion.
 
 ## Configuration
 
-Create a file named `mgit.yaml` in your project directory (or any ancestor
-directory up to your home directory). `mgit` searches upward from the current
+Create a file named `gctx.yaml` in your project directory (or any ancestor
+directory up to your home directory). `gctx` searches upward from the current
 working directory and uses the first file it finds.
 
 ```yaml
@@ -133,7 +133,7 @@ git_username: Your Name
 git_email: you@example.com
 ```
 
-All fields are optional. See `mgit.example.yaml` for an annotated template.
+All fields are optional. See `gctx.example.yaml` for an annotated template.
 
 ### Config file search order
 
@@ -144,7 +144,7 @@ All fields are optional. See `mgit.example.yaml` for an annotated template.
 /home/user/                     ← stops at home directory
 ```
 
-The first `mgit.yaml` found wins. If no file is found, `mgit` runs `git`
+The first `gctx.yaml` found wins. If no file is found, `gctx` runs `git`
 with no modifications to the environment.
 
 ### SSH key injection
@@ -172,7 +172,7 @@ Any pre-existing values for these variables in the environment are replaced.
 
 ## IDE Integration
 
-> **Note:** `mgit` works as a drop-in Git replacement for IDE operations that
+> **Note:** `gctx` works as a drop-in Git replacement for IDE operations that
 > invoke an external `git` process. IDEs that use embedded Git libraries
 > (e.g. JGit, libgit2) internally may bypass the configured executable, so
 > full compatibility cannot be guaranteed.
@@ -183,29 +183,29 @@ Add to `.vscode/settings.json`:
 
 ```json
 {
-  "git.path": "/usr/local/bin/mgit"
+  "git.path": "/usr/local/bin/gctx"
 }
 ```
 
 ### JetBrains IDEs
 
 Open **Settings / Preferences** → **Version Control** → **Git**, set
-**Path to Git executable** to the absolute path of `mgit`, then click **Test**.
+**Path to Git executable** to the absolute path of `gctx`, then click **Test**.
 
 ## Project structure
 
 ```
-mgit/
-├── cmd/mgit/
-│   ├── main.go               — entry point and mgit subcommand dispatcher
-│   ├── cmd_version.go        — `mgit mgit version`
-│   ├── cmd_init.go           — `mgit mgit init`
-│   └── cmd_completion.go     — `mgit mgit completion`
+gctx/
+├── cmd/gctx/
+│   ├── main.go               — entry point and gctx subcommand dispatcher
+│   ├── cmd_version.go        — `gctx gctx version`
+│   ├── cmd_init.go           — `gctx gctx init`
+│   └── cmd_completion.go     — `gctx gctx completion`
 ├── internal/
 │   ├── config/               — config loading and path expansion
 │   ├── gitcmd/               — subcommand detection, SSH and author helpers
 │   └── runner/               — subprocess execution
-├── mgit.example.yaml
+├── gctx.example.yaml
 └── README.md
 ```
 

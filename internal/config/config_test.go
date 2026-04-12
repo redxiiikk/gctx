@@ -7,16 +7,16 @@ import (
 	"testing"
 )
 
-// writeConfig creates a mgit.yaml in dir with the given content.
+// writeConfig creates a gctx.yaml in dir with the given content.
 func writeConfig(t *testing.T, dir, content string) {
 	t.Helper()
-	if err := os.WriteFile(filepath.Join(dir, "mgit.yaml"), []byte(content), 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "gctx.yaml"), []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestLoad_NotFound(t *testing.T) {
-	// Use a temp dir that has no mgit.yaml anywhere up to its root.
+	// Use a temp dir that has no gctx.yaml anywhere up to its root.
 	dir := t.TempDir()
 	if err := os.Chdir(dir); err != nil {
 		t.Fatal(err)

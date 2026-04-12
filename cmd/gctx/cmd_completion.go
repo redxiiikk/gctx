@@ -5,20 +5,20 @@ import (
 	"os"
 )
 
-const bashCompletion = `# mgit bash completion
+const bashCompletion = `# gctx bash completion
 # Recommended — add to ~/.bashrc so completions stay up-to-date automatically:
-#   eval "$(mgit mgit completion bash)"
+#   eval "$(gctx gctx completion bash)"
 #
 # Alternative — write a static file:
-#   mgit mgit completion bash > ~/.bash_completion.d/mgit
+#   gctx gctx completion bash > ~/.bash_completion.d/gctx
 
-_mgit_complete() {
+_gctx_complete() {
     local cur prev
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Handle 'mgit mgit <subcommand>' completion
-    if [[ "${COMP_WORDS[1]}" == "mgit" && "$COMP_CWORD" -eq 2 ]]; then
+    # Handle 'gctx gctx <subcommand>' completion
+    if [[ "${COMP_WORDS[1]}" == "gctx" && "$COMP_CWORD" -eq 2 ]]; then
         COMPREPLY=($(compgen -W "version init completion" -- "$cur"))
         return 0
     fi
@@ -39,27 +39,27 @@ _mgit_complete() {
     fi
 }
 
-complete -o bashdefault -o default -o nospace -F _mgit_complete mgit
+complete -o bashdefault -o default -o nospace -F _gctx_complete gctx
 `
 
-const zshCompletion = `#compdef mgit
-# mgit zsh completion
+const zshCompletion = `#compdef gctx
+# gctx zsh completion
 # Recommended — add to ~/.zshrc so completions stay up-to-date automatically:
-#   eval "$(mgit mgit completion zsh)"
+#   eval "$(gctx gctx completion zsh)"
 #
 # Alternative — write a static file (requires fpath setup, see README):
-#   mgit mgit completion zsh > ~/.zfunc/_mgit
+#   gctx gctx completion zsh > ~/.zfunc/_gctx
 
-_mgit() {
-    # 'mgit mgit <subcommand>' — complete built-in subcommands
-    if [[ "${words[2]}" == "mgit" ]]; then
+_gctx() {
+    # 'gctx gctx <subcommand>' — complete built-in subcommands
+    if [[ "${words[2]}" == "gctx" ]]; then
         if (( CURRENT == 3 )); then
             local -a subcmds=(
-                'version:Show mgit version information'
-                'init:Initialize a new mgit.yaml configuration file'
+                'version:Show gctx version information'
+                'init:Initialize a new gctx.yaml configuration file'
                 'completion:Generate shell completion scripts (bash/zsh/fish)'
             )
-            _describe 'mgit subcommand' subcmds
+            _describe 'gctx subcommand' subcmds
         fi
         return
     fi
@@ -72,34 +72,34 @@ _mgit() {
 
 # #compdef is only processed when installed via fpath.
 # compdef explicitly registers the function for both eval and fpath installs.
-compdef _mgit mgit
+compdef _gctx gctx
 `
 
-const fishCompletion = `# mgit fish completion
+const fishCompletion = `# gctx fish completion
 # Recommended — add to ~/.config/fish/config.fish so completions stay up-to-date:
-#   mgit mgit completion fish | source
+#   gctx gctx completion fish | source
 #
 # Alternative — write a static file:
-#   mgit mgit completion fish > ~/.config/fish/completions/mgit.fish
+#   gctx gctx completion fish > ~/.config/fish/completions/gctx.fish
 
 # Disable default file completions
-complete -c mgit -f
+complete -c gctx -f
 
-# 'mgit mgit <subcommand>' — complete built-in subcommands
-complete -c mgit -n '__fish_seen_subcommand_from mgit' \
-    -a 'version' -d 'Show mgit version information'
-complete -c mgit -n '__fish_seen_subcommand_from mgit' \
-    -a 'init' -d 'Initialize a new mgit.yaml configuration file'
-complete -c mgit -n '__fish_seen_subcommand_from mgit' \
+# 'gctx gctx <subcommand>' — complete built-in subcommands
+complete -c gctx -n '__fish_seen_subcommand_from gctx' \
+    -a 'version' -d 'Show gctx version information'
+complete -c gctx -n '__fish_seen_subcommand_from gctx' \
+    -a 'init' -d 'Initialize a new gctx.yaml configuration file'
+complete -c gctx -n '__fish_seen_subcommand_from gctx' \
     -a 'completion' -d 'Generate shell completion scripts'
 
 # For everything else, wrap git completions
-complete -c mgit -n 'not __fish_seen_subcommand_from mgit' -w git
+complete -c gctx -n 'not __fish_seen_subcommand_from gctx' -w git
 `
 
 func cmdCompletion(args []string) int {
 	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, "usage: mgit mgit completion <shell>")
+		fmt.Fprintln(os.Stderr, "usage: gctx gctx completion <shell>")
 		fmt.Fprintln(os.Stderr, "supported shells: bash, zsh, fish")
 		return 1
 	}

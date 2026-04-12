@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/redxiiikk/mgit/internal/config"
-	"github.com/redxiiikk/mgit/internal/runner"
+	"github.com/redxiiikk/gctx/internal/config"
+	"github.com/redxiiikk/gctx/internal/runner"
 )
 
 // Set via -ldflags at build time.
@@ -16,8 +16,8 @@ var (
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "mgit" {
-		os.Exit(runMgitCmd(os.Args[2:]))
+	if len(os.Args) > 1 && os.Args[1] == "gctx" {
+		os.Exit(runGctxCmd(os.Args[2:]))
 	}
 
 	cfg, err := config.Load()
@@ -34,9 +34,9 @@ func main() {
 	os.Exit(code)
 }
 
-func runMgitCmd(args []string) int {
+func runGctxCmd(args []string) int {
 	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, "usage: mgit mgit <command>")
+		fmt.Fprintln(os.Stderr, "usage: gctx gctx <command>")
 		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
 		return 1
 	}
@@ -48,7 +48,7 @@ func runMgitCmd(args []string) int {
 	case "completion":
 		return cmdCompletion(args[1:])
 	default:
-		fmt.Fprintf(os.Stderr, "unknown mgit command: %s\n", args[0])
+		fmt.Fprintf(os.Stderr, "unknown gctx command: %s\n", args[0])
 		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
 		return 1
 	}

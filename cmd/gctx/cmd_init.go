@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/redxiiikk/mgit/internal/config"
+	"github.com/redxiiikk/gctx/internal/config"
 )
 
 func cmdInit() int {
@@ -33,7 +33,7 @@ func cmdInit() int {
 		return 1
 	}
 
-	fmt.Println("Created mgit.yaml")
+	fmt.Println("Created gctx.yaml")
 	return 0
 }
 

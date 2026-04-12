@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/redxiiikk/mgit/internal/config"
-	"github.com/redxiiikk/mgit/internal/gitcmd"
+	"github.com/redxiiikk/gctx/internal/config"
+	"github.com/redxiiikk/gctx/internal/gitcmd"
 )
 
 // Run executes git with gitArgs, injecting SSH and author identity environment
@@ -50,7 +50,7 @@ func Run(cfg *config.Config, gitArgs []string) (int, error) {
 	}
 }
 
-// printInjection prints what mgit will inject so the user is aware before git
+// printInjection prints what gctx will inject so the user is aware before git
 // runs. SSH key path is read from cfg for human-readable display; name and
 // email are read from inject directly since they are already trimmed.
 func printInjection(cfg *config.Config, inject []gitcmd.EnvVar) {
@@ -58,13 +58,13 @@ func printInjection(cfg *config.Config, inject []gitcmd.EnvVar) {
 		return
 	}
 	if findEnvVar(inject, "GIT_SSH_COMMAND") != "" {
-		fmt.Fprintf(os.Stdout, "[mgit] using SSH key: %s\n", config.ExpandPath(cfg.SSHPrivateKey))
+		fmt.Fprintf(os.Stdout, "[gctx] using SSH key: %s\n", config.ExpandPath(cfg.SSHPrivateKey))
 	}
 	if name := findEnvVar(inject, "GIT_AUTHOR_NAME"); name != "" {
-		fmt.Fprintf(os.Stdout, "[mgit] using author name: %s\n", name)
+		fmt.Fprintf(os.Stdout, "[gctx] using author name: %s\n", name)
 	}
 	if email := findEnvVar(inject, "GIT_AUTHOR_EMAIL"); email != "" {
-		fmt.Fprintf(os.Stdout, "[mgit] using author email: %s\n", email)
+		fmt.Fprintf(os.Stdout, "[gctx] using author email: %s\n", email)
 	}
 }
 

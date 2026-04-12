@@ -1,4 +1,4 @@
-module github.com/redxiiikk/mgit
+module github.com/redxiiikk/gctx
 
 go 1.26.2
 

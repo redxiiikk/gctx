@@ -10,18 +10,18 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ErrConfigNotFound is returned by Load when no mgit.yaml is found between the
+// ErrConfigNotFound is returned by Load when no gctx.yaml is found between the
 // working directory and the user's home directory.
-var ErrConfigNotFound = errors.New("mgit.yaml not found")
+var ErrConfigNotFound = errors.New("gctx.yaml not found")
 
-// Config mirrors the fields in mgit.yaml.
+// Config mirrors the fields in gctx.yaml.
 type Config struct {
 	SSHPrivateKey string `yaml:"ssh_private_key,omitempty"`
 	GitUsername   string `yaml:"git_username,omitempty"`
 	GitEmail      string `yaml:"git_email,omitempty"`
 }
 
-// Load searches for mgit.yaml starting from the current working directory and
+// Load searches for gctx.yaml starting from the current working directory and
 // walking upward until the user's home directory. It returns ErrConfigNotFound
 // if no file is located.
 func Load() (*Config, error) {
@@ -40,7 +40,7 @@ func Load() (*Config, error) {
 	home = filepath.Clean(home)
 
 	for {
-		cfgPath := filepath.Join(dir, "mgit.yaml")
+		cfgPath := filepath.Join(dir, "gctx.yaml")
 		data, err := os.ReadFile(cfgPath)
 		if err == nil {
 			var c Config
@@ -65,7 +65,7 @@ func Load() (*Config, error) {
 	return nil, ErrConfigNotFound
 }
 
-// Write serializes cfg to mgit.yaml in dir, omitting fields that are empty.
+// Write serializes cfg to gctx.yaml in dir, omitting fields that are empty.
 // It creates the file (or truncates an existing one).
 func Write(cfg *Config, dir string) error {
 	if cfg == nil {
@@ -77,7 +77,7 @@ func Write(cfg *Config, dir string) error {
 		return fmt.Errorf("marshalling config: %w", err)
 	}
 
-	cfgPath := filepath.Join(dir, "mgit.yaml")
+	cfgPath := filepath.Join(dir, "gctx.yaml")
 	if err := os.WriteFile(cfgPath, data, 0o644); err != nil {
 		return fmt.Errorf("writing %s: %w", cfgPath, err)
 	}

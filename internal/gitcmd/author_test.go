@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/redxiiikk/mgit/internal/config"
+	"github.com/redxiiikk/gctx/internal/config"
 )
 
 func TestNeedsAuthorIdentity(t *testing.T) {
