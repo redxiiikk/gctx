@@ -9,12 +9,6 @@ import (
 	"github.com/redxiiikk/gctx/internal/runner"
 )
 
-// Set via -ldflags at build time.
-var (
-	version   = "dev-build-version"
-	buildDate = "N/A"
-)
-
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "gctx" {
 		os.Exit(runGctxCmd(os.Args[2:]))
