@@ -9,6 +9,6 @@ var (
 )
 
 func cmdVersion() int {
-	fmt.Printf("gctx version %s, commit %s, built at %s\n", version, date, commit)
+	fmt.Printf("gctx version %s, commit %s, built at %s\n", version, commit, date)
 	return 0
 }

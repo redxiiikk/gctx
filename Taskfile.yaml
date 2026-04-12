@@ -1,25 +1,5 @@
 version: "3"
 
-vars:
-  BINARY: gctx
-  CMD: ./cmd/gctx
-  DIST: dist
-  # Leave VERSION empty for local builds — the default in main.go is used.
-  # CI should pass the git tag: task build VERSION=v1.2.3
-  VERSION: ""
-  BUILD_DATE:
-    sh: date +%Y-%m-%d
-  # Inject buildDate always; inject version only when VERSION is non-empty.
-  LDFLAGS:
-    sh: |
-      flags="-X main.buildDate={{.BUILD_DATE}}"
-      if [ -n "{{.VERSION}}" ]; then
-        flags="$flags -X main.version={{.VERSION}}"
-      fi
-      echo "$flags"
-  INSTALL_DIR:
-    sh: go env GOPATH
-
 tasks:
   fmt:
     desc: Format all Go source files
@@ -27,60 +7,11 @@ tasks:
       - gofmt -w -s .
 
   build:
-    desc: Build the gctx binary into dist/
+    desc: Build a snapshot for the current platform via goreleaser (output goes to dist/)
     cmds:
-      - mkdir -p {{.DIST}}
-      - go build -ldflags "{{.LDFLAGS}}" -o {{.DIST}}/{{.BINARY}} {{.CMD}}
-    sources:
-      - "**/*.go"
-      - go.mod
-      - go.sum
-    generates:
-      - "{{.DIST}}/{{.BINARY}}"
+      - goreleaser build --snapshot --clean --single-target
 
   test:
     desc: Run all unit tests
     cmds:
       - go test ./...
-
-  install:
-    desc: Install gctx to $GOPATH/bin and set up shell completion
-    cmds:
-      - go install -ldflags "{{.LDFLAGS}}" {{.CMD}}
-      - echo "Installed to {{.INSTALL_DIR}}/bin/{{.BINARY}}"
-      - task: completion
-
-  completion:
-    desc: Add gctx completion eval line to your shell's startup config (auto-detected from $SHELL)
-    vars:
-      SHELL_NAME:
-        sh: basename "$SHELL"
-    cmds:
-      - cmd: |
-          case "{{.SHELL_NAME}}" in
-            zsh)
-              RC=~/.zshrc
-              LINE='eval "$(gctx gctx completion zsh)"'
-              ;;
-            bash)
-              RC=~/.bashrc
-              LINE='eval "$(gctx gctx completion bash)"'
-              ;;
-            fish)
-              RC=~/.config/fish/config.fish
-              LINE='gctx gctx completion fish | source'
-              mkdir -p ~/.config/fish
-              ;;
-            *)
-              echo "Unsupported shell: {{.SHELL_NAME}} — add the eval line manually:"
-              echo "  eval \"\$(gctx gctx completion <bash|zsh|fish>)\""
-              exit 1
-              ;;
-          esac
-          if grep -qF "$LINE" "$RC" 2>/dev/null; then
-            echo "gctx completion already configured in $RC"
-          else
-            printf '\n# gctx shell completion\n%s\n' "$LINE" >> "$RC"
-            echo "Added gctx completion to $RC"
-            echo "Restart your shell or run: source $RC"
-          fi
