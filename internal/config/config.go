@@ -102,3 +102,7 @@ func ExpandPath(p string) string {
 	}
 	return p
 }
+
+func (c *Config) IsEmpty() bool {
+	return c.SSHPrivateKey == "" && c.GitUsername == "" && c.GitEmail == ""
+}

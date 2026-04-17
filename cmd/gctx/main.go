@@ -41,6 +41,8 @@ func runGctxCmd(args []string) int {
 		return cmdInit()
 	case "completion":
 		return cmdCompletion(args[1:])
+	case "config":
+		return cmdConfig()
 	default:
 		fmt.Fprintf(os.Stderr, "unknown gctx command: %s\n", args[0])
 		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
