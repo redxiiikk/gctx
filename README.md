@@ -20,18 +20,12 @@ go install github.com/redxiiikk/gctx/cmd/gctx@latest
 
 Or build from source using [Task](https://taskfile.dev):
 
+> before you build gctx, you need install goreleaser, you can following the [goreleaser install guide](https://goreleaser.com/getting-started/install).
+
 ```bash
 git clone https://github.com/redxiiikk/gctx.git
 cd gctx
-task build    # builds to dist/gctx
-task install  # installs to $GOPATH/bin and sets up shell completion
-```
-
-`task install` auto-detects your current shell from `$SHELL` and installs the
-appropriate completion script. You can also run it standalone at any time:
-
-```bash
-task completion
+mise build    # builds to dist/gctx_darwin_{.Arch}/gctx
 ```
 
 ## Usage
@@ -191,23 +185,6 @@ Add to `.vscode/settings.json`:
 
 Open **Settings / Preferences** → **Version Control** → **Git**, set
 **Path to Git executable** to the absolute path of `gctx`, then click **Test**.
-
-## Project structure
-
-```
-gctx/
-├── cmd/gctx/
-│   ├── main.go               — entry point and gctx subcommand dispatcher
-│   ├── cmd_version.go        — `gctx gctx version`
-│   ├── cmd_init.go           — `gctx gctx init`
-│   └── cmd_completion.go     — `gctx gctx completion`
-├── internal/
-│   ├── config/               — config loading and path expansion
-│   ├── gitcmd/               — subcommand detection, SSH and author helpers
-│   └── runner/               — subprocess execution
-├── gctx.example.yaml
-└── README.md
-```
 
 ## License
 

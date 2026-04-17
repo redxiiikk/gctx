@@ -1,0 +1,14 @@
+[tools]
+go = "latest"
+
+[tasks.build]
+description = "Build the CLI"
+run = "goreleaser build --snapshot --clean --single-target"
+
+[tasks.test]
+description = "Run all unit tests"
+run = "go test ./..."
+
+[tasks.lint]
+description = "Format all Go source files"
+run = "gofmt -w -s ."
