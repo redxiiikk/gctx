@@ -1,5 +1,6 @@
 [tools]
 go = "latest"
+goreleaser = "latest"
 
 [tasks.build]
 description = "Build the CLI"
