@@ -14,11 +14,26 @@ author identity), `gctx` removes the need to juggle `GIT_SSH_COMMAND`,
 
 ## Installation
 
+### Homebrew
+
+Prebuilt macOS and Linux binaries are published to the [Homebrew tap](https://github.com/redxiiikk/homebrew-tap) ([releases](https://github.com/redxiiikk/gctx/releases) are produced with [GoReleaser](https://goreleaser.com/)).
+
+```bash
+brew tap redxiiikk/tap
+brew install gctx
+```
+
+Equivalent one-liner: `brew install redxiiikk/tap/gctx`. The cask depends on `git`, which Homebrew will satisfy if needed.
+
+### Go
+
 ```bash
 go install github.com/redxiiikk/gctx/cmd/gctx@latest
 ```
 
-Or build from source with [mise](https://mise.jdx.dev/) (tasks are defined in `mise.toml`):
+### Build from source
+
+Build from source with [mise](https://mise.jdx.dev/) (tasks are defined in `mise.toml`):
 
 > Before building, install [goreleaser](https://goreleaser.com/) using
 > their [installation guide](https://goreleaser.com/getting-started/install).
@@ -208,7 +223,7 @@ Any pre-existing values for these variables in the environment are replaced.
 
 ### VSCode
 
-Add to `.vscode/settings.json`:
+Add to `.vscode/settings.json` (use the output of `which gctx` on your machine—Homebrew on Apple Silicon is often `/opt/homebrew/bin/gctx`):
 
 ```json
 {
