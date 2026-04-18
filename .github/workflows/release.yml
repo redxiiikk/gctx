@@ -39,3 +39,5 @@ jobs:
         run: mise exec -- goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PAT with contents:write on redxiiikk/homebrew-tap (default GITHUB_TOKEN cannot push to another repo).
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}

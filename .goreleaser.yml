@@ -64,3 +64,24 @@ changelog:
       - "^chore:"
       - Merge pull request
       - Merge branch
+
+homebrew_casks:
+  - name: gctx
+    ids:
+      - gctx-archive
+    homepage: "https://github.com/redxiiikk/gctx"
+    description: "A thin Git wrapper that auto-injects per-project SSH keys and author identities"
+    binaries:
+      - gctx
+    dependencies:
+      - formula: git
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/gctx"]
+          end
+    repository:
+      owner: redxiiikk
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
