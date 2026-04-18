@@ -13,6 +13,11 @@ builds:
   - id: gctx
     main: ./cmd/gctx
     binary: gctx
+    ldflags:
+      - -s -w
+      - -X=main.version={{.Tag}}
+      - -X=main.commit={{.ShortCommit}}
+      - -X=main.date={{.Date}}
     env:
       - CGO_ENABLED=0
     goos:
