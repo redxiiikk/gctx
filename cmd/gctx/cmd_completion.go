@@ -19,7 +19,13 @@ _gctx_complete() {
 
     # Handle 'gctx gctx <subcommand>' completion
     if [[ "${COMP_WORDS[1]}" == "gctx" && "$COMP_CWORD" -eq 2 ]]; then
-        COMPREPLY=($(compgen -W "version init completion" -- "$cur"))
+        COMPREPLY=($(compgen -W "version init completion config" -- "$cur"))
+        return 0
+    fi
+
+    # 'gctx gctx config <key>' — valid config keys
+    if [[ "${COMP_WORDS[1]}" == "gctx" && "${COMP_WORDS[2]}" == "config" && "$COMP_CWORD" -eq 3 ]]; then
+        COMPREPLY=($(compgen -W "ssh_private_key git_username git_email" -- "$cur"))
         return 0
     fi
 
@@ -58,8 +64,11 @@ _gctx() {
                 'version:Show gctx version information'
                 'init:Initialize a new gctx.yaml configuration file'
                 'completion:Generate shell completion scripts (bash/zsh/fish)'
+                'config:Show, get, or set gctx.yaml options'
             )
             _describe 'gctx subcommand' subcmds
+        elif (( CURRENT == 4 )) && [[ "${words[3]}" == "config" ]]; then
+            _values 'config key' ssh_private_key git_username git_email
         fi
         return
     fi
@@ -92,6 +101,16 @@ complete -c gctx -n '__fish_seen_subcommand_from gctx' \
     -a 'init' -d 'Initialize a new gctx.yaml configuration file'
 complete -c gctx -n '__fish_seen_subcommand_from gctx' \
     -a 'completion' -d 'Generate shell completion scripts'
+complete -c gctx -n '__fish_seen_subcommand_from gctx' \
+    -a 'config' -d 'Show, get, or set gctx.yaml options'
+
+# 'gctx gctx config <key>' — valid config keys
+complete -c gctx -n '__fish_seen_subcommand_from gctx; and __fish_prev_arg_in config' \
+    -a 'ssh_private_key' -d 'Path to SSH private key'
+complete -c gctx -n '__fish_seen_subcommand_from gctx; and __fish_prev_arg_in config' \
+    -a 'git_username' -d 'Git author name'
+complete -c gctx -n '__fish_seen_subcommand_from gctx; and __fish_prev_arg_in config' \
+    -a 'git_email' -d 'Git author email'
 
 # For everything else, wrap git completions
 complete -c gctx -n 'not __fish_seen_subcommand_from gctx' -w git
