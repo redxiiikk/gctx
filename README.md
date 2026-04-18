@@ -18,14 +18,39 @@ author identity), `gctx` removes the need to juggle `GIT_SSH_COMMAND`,
 go install github.com/redxiiikk/gctx/cmd/gctx@latest
 ```
 
-Or build from source using [Task](https://taskfile.dev):
+Or build from source with [mise](https://mise.jdx.dev/) (tasks are defined in `mise.toml`):
 
-> before you build gctx, you need install goreleaser, you can following the [goreleaser install guide](https://goreleaser.com/getting-started/install).
+> Before building, install [goreleaser](https://goreleaser.com/) using
+> their [installation guide](https://goreleaser.com/getting-started/install).
 
 ```bash
 git clone https://github.com/redxiiikk/gctx.git
 cd gctx
-mise build    # builds to dist/gctx_darwin_{.Arch}/gctx
+mise install    # optional: install the Go version from mise.toml
+mise build      # builds to dist/gctx_darwin_{.Arch}/gctx
+```
+
+### Development
+
+From the repository root:
+
+| Command                     | Description                                                                                                  |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------|
+| `mise test`                 | Run `go test ./...`                                                                                          |
+| `mise lint`                 | Run `gofmt -w -s .` on the tree                                                                              |
+| `mise run run <subcommand>` | Run the CLI from source (`go run ./cmd/gctx gctx …`). Subcommands: `init`, `version`, `config`, `completion` |
+
+Examples:
+
+```bash
+mise run run version
+mise run run config
+```
+
+The `completion` subcommand also needs a shell (`bash`, `zsh`, or `fish`). Because of that, call it directly:
+
+```bash
+go run ./cmd/gctx gctx completion zsh
 ```
 
 ## Usage
@@ -42,11 +67,12 @@ gctx push origin main
 
 `gctx` also exposes its own subcommands under the `gctx gctx` namespace:
 
-| Command                        | Description                                                 |
-|--------------------------------|-------------------------------------------------------------|
-| `gctx gctx version`            | Show version and build date                                 |
-| `gctx gctx init`               | Interactively create a `gctx.yaml` in the current directory |
-| `gctx gctx completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`)  |
+| Command                        | Description                                                    |
+|--------------------------------|----------------------------------------------------------------|
+| `gctx gctx version`            | Show version and build metadata                                |
+| `gctx gctx init`               | Interactively create a `gctx.yaml` in the current directory    |
+| `gctx gctx config`             | Print the resolved effective config as YAML (from search path) |
+| `gctx gctx completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`)     |
 
 ### Shell tab completion
 

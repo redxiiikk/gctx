@@ -20,4 +20,4 @@ arg "<subcommand>" help="gctx subcommand" {
   choices "init" "version" "config" "completion"
 }
 '''
-run = "go run cmd/gctx/main.go gctx"
+run = "go run ./cmd/gctx gctx ${usage_subcommand}"
