@@ -31,7 +31,7 @@ func main() {
 func runGctxCmd(args []string) int {
 	if len(args) == 0 {
 		fmt.Fprintln(os.Stderr, "usage: gctx gctx <command>")
-		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
+		fmt.Fprintln(os.Stderr, "commands: version, init, completion, config")
 		return 1
 	}
 	switch args[0] {
@@ -42,10 +42,10 @@ func runGctxCmd(args []string) int {
 	case "completion":
 		return cmdCompletion(args[1:])
 	case "config":
-		return cmdConfig()
+		return cmdConfig(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown gctx command: %s\n", args[0])
-		fmt.Fprintln(os.Stderr, "commands: version, init, completion")
+		fmt.Fprintln(os.Stderr, "commands: version, init, completion, config")
 		return 1
 	}
 }

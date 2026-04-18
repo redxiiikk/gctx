@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/redxiiikk/gctx/internal/config"
@@ -16,19 +17,21 @@ func cmdInit() int {
 	username := prompt(reader, "Git username (leave empty to skip): ")
 	email := prompt(reader, "Git email (leave empty to skip): ")
 
-	cfg := &config.Config{
-		SSHPrivateKey: sshKey,
-		GitUsername:   username,
-		GitEmail:      email,
-	}
-
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "getting working directory: %v\n", err)
 		return 1
 	}
 
-	if err := config.Write(cfg, wd); err != nil {
+	cfg := &config.Config{
+		SSHPrivateKey: sshKey,
+		GitUsername:   username,
+		GitEmail:      email,
+
+		Path: filepath.Join(wd, "gctx.yaml"),
+	}
+
+	if err := cfg.Save(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}

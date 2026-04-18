@@ -72,7 +72,16 @@ gctx push origin main
 | `gctx gctx version`            | Show version and build metadata                                |
 | `gctx gctx init`               | Interactively create a `gctx.yaml` in the current directory    |
 | `gctx gctx config`             | Print the resolved effective config as YAML (from search path) |
+| `gctx gctx config <key>`       | Print the current value of a single config key                 |
+| `gctx gctx config <key> <val>` | Update `<key>` in the resolved `gctx.yaml` (creates one in cwd if none) |
 | `gctx gctx completion <shell>` | Print a shell completion script (`bash`, `zsh`, or `fish`)     |
+
+Valid config keys: `ssh_private_key`, `git_username`, `git_email`.
+
+```bash
+gctx gctx config git_username "Your Name"
+gctx gctx config git_email you@example.com
+```
 
 ### Shell tab completion
 
