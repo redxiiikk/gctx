@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/redxiiikk/gctx/cmd/gctx/repos"
 	"github.com/redxiiikk/gctx/internal/config"
 	"github.com/redxiiikk/gctx/internal/runner"
 )
@@ -43,6 +44,8 @@ func runGctxCmd(args []string) int {
 		return cmdCompletion(args[1:])
 	case "config":
 		return cmdConfig(args[1:])
+	case "repos":
+		return repos.CmdRepos(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown gctx command: %s\n", args[0])
 		fmt.Fprintln(os.Stderr, "commands: version, init, completion, config")
