@@ -14,11 +14,10 @@ run = "go test ./..."
 description = "Format all Go source files"
 run = "gofmt -w -s ."
 
-[tasks.run]
-description = "Run the CLI"
-usage = '''
-arg "<subcommand>" help="gctx subcommand" {
-  choices "init" "version" "config" "completion"
-}
-'''
-run = "go run ./cmd/gctx gctx ${usage_subcommand}"
+[tasks.gctx]
+run = "go run ./cmd/gctx gctx"
+raw_args = true
+
+[tasks.git]
+run = "go run ./cmd/gctx"
+raw_args = true
